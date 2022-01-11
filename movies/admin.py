@@ -39,13 +39,12 @@ class MovieShotsInline(admin.TabularInline):
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
     """Фильмы"""
-    list_display = ("title", "category", "url", "draft")
+    list_display = ("title", "category", "url")
     list_filter = ("category", "year")
     search_fields = ("title", "category__name")
     inlines = [MovieShotsInline, ReviewInline]
     save_on_top = True
     save_as = True
-    list_editable = ("draft",)
     actions = ["publish", "unpublish"]
     form = MovieAdminForm
     readonly_fields = ("get_image",)
@@ -66,9 +65,6 @@ class MovieAdmin(admin.ModelAdmin):
         (None, {
             "fields": (("budget", "fees_in_usa", "fess_in_world"),)
         }),
-        ("Options", {
-            "fields": (("url", "draft"),)
-        }),
     )
 
     def get_image(self, obj):
@@ -76,7 +72,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     def unpublish(self, request, queryset):
         """Снять с публикации"""
-        row_update = queryset.update(draft=True)
+        row_update = queryset.update()
         if row_update == 1:
             message_bit = "1 запись была обновлена"
         else:
@@ -85,7 +81,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     def publish(self, request, queryset):
         """Опубликовать"""
-        row_update = queryset.update(draft=False)
+        row_update = queryset.update()
         if row_update == 1:
             message_bit = "1 запись была обновлена"
         else:

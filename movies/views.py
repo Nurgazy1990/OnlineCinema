@@ -21,7 +21,7 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = PaginationMovies
 
     def get_queryset(self):
-        movies = Movie.objects.filter(draft=False).annotate(
+        movies = Movie.objects.all().annotate(
             rating_user=models.Count("ratings",
                                      filter=models.Q(ratings__ip=get_client_ip(self.request)))
         ).annotate(

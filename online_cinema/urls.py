@@ -15,7 +15,6 @@ schema_view = get_schema_view(
     public=True
 )
 
-
 urlpatterns = [
     path('api/admin/', admin.site.urls),
     path('api/api-auth/', include('rest_framework.urls')),
