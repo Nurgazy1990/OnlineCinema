@@ -15,7 +15,7 @@ from .service import get_client_ip, MovieFilter, PaginationMovies
 
 
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
-    """Вывод списка фильмов"""
+    """Список фильмов"""
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MovieFilter
     pagination_class = PaginationMovies
