@@ -20,7 +20,7 @@ urlpatterns = [
     path('api/api-auth/', include('rest_framework.urls')),
     path('api/v1/', include('movies.urls')),
     path('api/v1/docs/', schema_view.with_ui('swagger')),
-    # path('api/v1/', include('account.urls'))
+    path('api/v1/', include('account.urls'))
 ]
 
 if settings.DEBUG:

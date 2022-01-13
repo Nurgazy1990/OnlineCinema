@@ -84,20 +84,17 @@ class MovieAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    """Отзывы к фильму"""
     list_display = ("name", "email", "movie", "id")
     readonly_fields = ("name", "email")
 
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    """Жанры"""
     list_display = ("name", "slug")
 
 
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):
-    """Актеры"""
     list_display = ("name", "age", "get_image")
     readonly_fields = ("get_image",)
 
@@ -109,7 +106,6 @@ class ActorAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    """Рейтинг"""
     list_display = ("star", "movie", "ip")
 
 admin.site.register(RatingStar)
