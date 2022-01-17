@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from datetime import date
 from django.urls import reverse
@@ -118,3 +119,13 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
+
+class Favorites(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE,
+                             related_name='favorites')
+    user = models.ForeignKey(get_user_model(),
+                             on_delete=models.CASCADE,
+                             related_name='liked')
+
+    class Meta:
+        unique_together = ['movie', 'user']

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Movie, Review, Rating, Actor
+from .models import Movie, Review, Rating, Actor, Genre
+
 
 class ActorListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,6 +36,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ("id", "name", "text")
 
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = "__all__"
 
 class MovieDetailSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field="name", read_only=True)

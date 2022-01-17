@@ -1,8 +1,12 @@
-from django.urls import path
-from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
+
+router = SimpleRouter()
+router.register('genre', views.GenreViewSet)
+router.register('favorites', views.FavoriteViewSet)
 
 urlpatterns = format_suffix_patterns([
     path("movie/", views.MovieViewSet.as_view({'get': 'list'})),
@@ -11,6 +15,7 @@ urlpatterns = format_suffix_patterns([
     path("rating/", views.AddStarRatingViewSet.as_view({'post': 'create'})),
     path('actor/', views.ActorsViewSet.as_view({'get': 'list'})),
     path('actor/<int:pk>/', views.ActorsViewSet.as_view({'get': 'retrieve'})),
+    path('', include(router.urls))
 ])
 
 

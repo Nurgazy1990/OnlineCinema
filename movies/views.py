@@ -1,23 +1,27 @@
 from django.db import models
 from rest_framework import generics, permissions, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from .models import Movie, Actor
+from .models import Movie, Actor, Genre, Favorites
+from .permissions import IsAdmin
 from .serializers import (
     MovieListSerializer,
     MovieDetailSerializer,
     ReviewCreateSerializer,
     CreateRatingSerializer,
     ActorListSerializer,
-    ActorDetailSerializer,
+    ActorDetailSerializer, GenreSerializer,
 )
-from .service import get_client_ip, MovieFilter, PaginationMovies
+from .service import get_client_ip, MovieFilter
 
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     """Список фильмов"""
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MovieFilter
-    pagination_class = PaginationMovies
 
     def get_queryset(self):
         movies = Movie.objects.all().annotate(
@@ -34,6 +38,31 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
         elif self.action == "retrieve":
             return MovieDetailSerializer
 
+class FavoriteViewSet(ModelViewSet):
+    queryset = Movie.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['create', 'add_to_favorites', 'remove_from_favorites']:
+            return [IsAuthenticated()]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            return [IsAdmin()]
+        return []
+
+    @action(['POST'], detail=True)
+    def add_to_favorites(self, request, pk=None):
+        movie = self.get_object()
+        if request.user.liked.filter(movie=movie).exists():
+            return Response('Уже добавлено в избранное')
+        Favorites.objects.create(movie=movie, user=request.user)
+        return Response('Добавлено в избранное')
+
+    @action(['POST'], detail=True)
+    def remove_from_favorites(self, request, pk=None):
+        movie = self.get_object()
+        if not request.user.liked.filter(movie=movie).exists():
+            return Response('Фильм не находится в списке избранных')
+        request.user.liked.filter(movie=movie).delete()
+        return Response('Фильм удален из избранных')
 
 class ReviewCreateViewSet(viewsets.ModelViewSet):
     """Добавление отзыва к фильму"""
@@ -58,53 +87,7 @@ class ActorsViewSet(viewsets.ReadOnlyModelViewSet):
         elif self.action == "retrieve":
             return ActorDetailSerializer
 
-
-
-# class MovieListView(generics.ListAPIView):
-#     """Вывод списка фильмов"""
-#     serializer_class = MovieListSerializer
-#     filter_backends = (DjangoFilterBackend,)
-#     filterset_class = MovieFilter
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#     def get_queryset(self):
-#         movies = Movie.objects.filter(draft=False).annotate(
-#             rating_user=models.Count("ratings",
-#                                      filter=models.Q(ratings__ip=get_client_ip(self.request)))
-#         ).annotate(
-#             middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
-#         )
-#         return movies
-
-#
-# class MovieDetailView(generics.RetrieveAPIView):
-#     """Вывод фильма"""
-#     queryset = Movie.objects.filter(draft=False)
-#     serializer_class = MovieDetailSerializer
-
-
-# class ReviewCreateView(generics.CreateAPIView):
-#     """Добавление отзыва к фильму"""
-#     serializer_class = ReviewCreateSerializer
-
-
-# class AddStarRatingView(generics.CreateAPIView):
-#     """Добавление рейтинга фильму"""
-#     serializer_class = CreateRatingSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(ip=get_client_ip(self.request))
-
-
-# class ActorsListView(generics.ListAPIView):
-#     """Вывод списка актеров"""
-#     queryset = Actor.objects.all()
-#     serializer_class = ActorListSerializer
-#
-#
-# class ActorsDetailView(generics.RetrieveAPIView):
-#     """Вывод актера или режиссера"""
-#     queryset = Actor.objects.all()
-#     serializer_class = ActorDetailSerializer
-
-
+class GenreViewSet(ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = [IsAdmin]
