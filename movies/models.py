@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from datetime import date
 from django.urls import reverse
@@ -77,21 +78,13 @@ class Movie(models.Model):
         verbose_name_plural = "Фильмы"
 
 
-class RatingStar(models.Model):
-    value = models.SmallIntegerField("Значение", default=0)
-
-    def __str__(self):
-        return f'{self.value}'
-
-    class Meta:
-        verbose_name = "Звезда рейтинга"
-        verbose_name_plural = "Звезды рейтинга"
-        ordering = ["-value"]
-
-
 class Rating(models.Model):
-    ip = models.CharField("IP адрес", max_length=15)
-    star = models.ForeignKey(RatingStar, on_delete=models.CASCADE, verbose_name="звезда")
+    star = models.SmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
     movie = models.ForeignKey(
         Movie,
         on_delete=models.CASCADE,
@@ -123,6 +116,16 @@ class Review(models.Model):
 class Favorites(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE,
                              related_name='favorites')
+    user = models.ForeignKey(get_user_model(),
+                             on_delete=models.CASCADE,
+                             related_name='added_to_favorites')
+
+    class Meta:
+        unique_together = ['movie', 'user']
+
+class Likes(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE,
+                             related_name='likes')
     user = models.ForeignKey(get_user_model(),
                              on_delete=models.CASCADE,
                              related_name='liked')

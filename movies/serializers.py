@@ -16,12 +16,10 @@ class ActorDetailSerializer(serializers.ModelSerializer):
 
 
 class MovieListSerializer(serializers.ModelSerializer):
-    rating_user = serializers.BooleanField()
-    middle_star = serializers.IntegerField()
 
     class Meta:
         model = Movie
-        fields = ("id", "title", "tagline", "category", "rating_user", "middle_star", "poster")
+        fields = ("id", "title", "tagline", "category", "poster")
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
@@ -58,9 +56,13 @@ class CreateRatingSerializer(serializers.ModelSerializer):
         model = Rating
         fields = ("star", "movie")
 
+    def validate_star(self, star):
+        if star not in range(1, 6):
+            raise serializers.ValidationError('Рейтинг должен быть от 1 до 5')
+        return star
+
     def create(self, validated_data):
         rating, _ = Rating.objects.update_or_create(
-            ip=validated_data.get('ip', None),
             movie=validated_data.get('movie', None),
             defaults={'star': validated_data.get("star")}
         )

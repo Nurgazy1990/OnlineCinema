@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Category, Genre, Movie, Actor, Rating, RatingStar, Review
+from .models import Category, Genre, Movie, Actor, Rating, Review
 
 
 class MovieAdminForm(forms.ModelForm):
@@ -106,9 +106,8 @@ class ActorAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ("star", "movie", "ip")
+    list_display = ("star", "movie",)
 
-admin.site.register(RatingStar)
 
 # admin.site.site_title = "Online Cinema"
 admin.site.site_header = "Online Cinema"
