@@ -30,6 +30,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
+    spam = models.BooleanField(default=True)
 
     objects = UserManager()
 

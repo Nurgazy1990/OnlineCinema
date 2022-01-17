@@ -1,6 +1,9 @@
 from django.db import models
+from django.http import HttpResponse
 from rest_framework import generics, permissions, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Movie, Actor, Review
 from .serializers import (
@@ -58,6 +61,7 @@ class ActorsViewSet(viewsets.ReadOnlyModelViewSet):
             return ActorListSerializer
         elif self.action == "retrieve":
             return ActorDetailSerializer
+
 
 
 # class MovieListView(generics.ListAPIView):
