@@ -1,11 +1,8 @@
 from django.db import models
-from django.http import HttpResponse
 from rest_framework import generics, permissions, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from .models import Movie, Actor, Review
+from .models import Movie, Actor
 from .serializers import (
     MovieListSerializer,
     MovieDetailSerializer,
@@ -15,7 +12,6 @@ from .serializers import (
     ActorDetailSerializer,
 )
 from .service import get_client_ip, MovieFilter, PaginationMovies
-
 
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     """Список фильмов"""

@@ -30,7 +30,6 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, blank=True)
-    spam = models.BooleanField(default=True)
 
     objects = UserManager()
 
@@ -54,11 +53,11 @@ class User(AbstractBaseUser):
         self.save()
         return code
 
-    @staticmethod
-    def send_activation_mail(email, code):
-        message = f'Ваш код активации: {code}'
-        send_mail('Активация аккаунта',
-                  message,
-                  'test@gmail.com',
-                  [email])
+    # @staticmethod
+    # def send_activation_mail(email, code):
+    #     message = f'Ваш код активации: {code}'
+    #     send_mail('Активация аккаунта',
+    #               message,
+    #               'test@gmail.com',
+    #               [email])
 
