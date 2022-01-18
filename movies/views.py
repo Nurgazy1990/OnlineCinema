@@ -12,7 +12,7 @@ from .serializers import (
     MovieDetailSerializer,
     ReviewCreateSerializer,
     CreateRatingSerializer,
-    ActorListSerializer,
+    ActorSerializer,
     ActorDetailSerializer, GenreSerializer,
 )
 from .service import MovieFilter
@@ -36,7 +36,7 @@ class FavoriteViewSet(ModelViewSet):
     queryset = Movie.objects.all()
 
     def get_permissions(self):
-        if self.action in ['create', 'add_to_favorites', 'remove_from_favorites']:
+        if self.action in ['create', 'add_to_favorites', 'remove_from_favorites', 'like']:
             return [IsAuthenticated()]
         elif self.action in ['update', 'partial_update', 'destroy']:
             return [IsAdmin()]
@@ -83,15 +83,10 @@ class AddStarRatingViewSet(ModelViewSet):
         serializer.save()
 
 
-class ActorsViewSet(ReadOnlyModelViewSet):
-    """Вывод актеров или режиссеров"""
+class ActorsViewSet(ModelViewSet):
     queryset = Actor.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return ActorListSerializer
-        elif self.action == "retrieve":
-            return ActorDetailSerializer
+    serializer_class = ActorSerializer
+    permission_classes = [IsAdmin]
 
 class GenreViewSet(ModelViewSet):
     queryset = Genre.objects.all()

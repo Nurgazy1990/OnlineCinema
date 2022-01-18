@@ -8,13 +8,12 @@ from .views import (MovieViewSet, ReviewCreateViewSet,
 router = SimpleRouter()
 router.register('genre', GenreViewSet)
 router.register('favorites', FavoriteViewSet)
+router.register('actor', ActorsViewSet)
 
 urlpatterns = format_suffix_patterns([
     path("movie/", MovieViewSet.as_view({'get': 'list'})),
     path("movie/<int:pk>/", MovieViewSet.as_view({'get': 'retrieve'})),
     path("review/", ReviewCreateViewSet.as_view({'post': 'create'})),
     path("rating/", AddStarRatingViewSet.as_view({'post': 'create'})),
-    path('actor/', ActorsViewSet.as_view({'get': 'list'})),
-    path('actor/<int:pk>/', ActorsViewSet.as_view({'get': 'retrieve'})),
     path('', include(router.urls))
 ])
