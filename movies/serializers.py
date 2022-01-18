@@ -26,7 +26,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ('name', 'text', 'movie')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
