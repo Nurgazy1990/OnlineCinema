@@ -57,6 +57,7 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Добавлен')
     tagline = models.CharField("Слоган", max_length=100, default='')
     description = models.TextField("Описание")
+    url = models.URLField(max_length=200, default='')
     poster = models.ImageField("Постер", upload_to="movies/")
     directors = models.ManyToManyField(Actor, verbose_name="режиссер", related_name="film_director")
     actors = models.ManyToManyField(Actor, verbose_name="Творческий состав", related_name="film_actors")
